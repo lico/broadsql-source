@@ -1,0 +1,296 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.upandcoding</groupId>
+	<artifactId>broadsql</artifactId>
+	<version>${revision}</version>
+	<name>BroadSQL</name>
+
+	<!-- This is a simplified build file for the public, source-available excerpt of BroadSQL
+		(see README.txt and LICENSE). It intentionally does not contain the private project's
+		release-automation profile, deployment/copy steps, or internal path references - it exists
+		only to compile the code, run the tests, and package a runnable jar. -->
+
+	<properties>
+
+		<!-- Version Control -->
+		<revision>5.0.8</revision>
+
+		<!-- Java Settings -->
+		<java.version>21</java.version>
+		<maven.compiler.release>${java.version}</maven.compiler.release>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<!-- Versions of Dependencies - kept identical to the private project's pom.xml so this
+			source matches what is actually shipped. -->
+		<commons-io.version>2.22.0</commons-io.version>
+		<commons-lang3.version>3.20.0</commons-lang3.version>
+		<commons-collections4.version>4.6.0</commons-collections4.version>
+		<commons-dbcp2.version>2.14.0</commons-dbcp2.version>
+
+		<h2.version>2.3.232</h2.version>
+		<derby.version>10.17.1.0</derby.version>
+		<sqlite-jdbc.version>3.53.2.1</sqlite-jdbc.version>
+		<hsqldb.version>2.7.4</hsqldb.version>
+		<postgresql.version>42.7.13</postgresql.version>
+
+		<spring.version>7.0.9</spring.version>
+		<apache.poi.version>5.5.1</apache.poi.version>
+		<jackcess.version>3.0.1</jackcess.version>
+		<jna.version>5.19.1</jna.version>
+		<jakarta.xml.bind.version>4.0.5</jakarta.xml.bind.version>
+
+		<junit.jupiter.version>5.14.4</junit.jupiter.version>
+		<assertj-core.version>3.22.0</assertj-core.version>
+
+		<flatlaf.version>3.7.2</flatlaf.version>
+		<sods.version>1.6.7</sods.version>
+
+		<slf4j.version>2.0.18</slf4j.version>
+		<logback.version>1.6.2</logback.version>
+		<log4j2.version>2.24.3</log4j2.version>
+	</properties>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>jakarta.xml.bind</groupId>
+			<artifactId>jakarta.xml.bind-api</artifactId>
+			<version>${jakarta.xml.bind.version}</version>
+		</dependency>
+
+		<!-- Apache Commons -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>${commons-io.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${commons-lang3.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+			<version>${commons-collections4.version}</version>
+		</dependency>
+
+		<!-- Logging: SLF4J + Logback, with bridges for libraries using other logging APIs -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jul-to-slf4j</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>log4j-over-slf4j</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-to-slf4j</artifactId>
+			<version>${log4j2.version}</version>
+		</dependency>
+
+		<!-- Platform class : for differentiating Linux/Windows -->
+		<dependency>
+			<groupId>net.java.dev.jna</groupId>
+			<artifactId>jna</artifactId>
+			<version>${jna.version}</version>
+		</dependency>
+
+		<!-- FlatLaf : modern Look & Feel for the CONFIG screen (Swing) -->
+		<dependency>
+			<groupId>com.formdev</groupId>
+			<artifactId>flatlaf</artifactId>
+			<version>${flatlaf.version}</version>
+		</dependency>
+
+		<!-- Tests -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>${junit.jupiter.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- SPRING -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Databases -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>${h2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.derby</groupId>
+			<artifactId>derby</artifactId>
+			<version>${derby.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.xerial</groupId>
+			<artifactId>sqlite-jdbc</artifactId>
+			<version>${sqlite-jdbc.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<version>${hsqldb.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${postgresql.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-dbcp2</artifactId>
+			<version>${commons-dbcp2.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- Jackcess : MS Access Databases -->
+		<dependency>
+			<groupId>com.healthmarketscience.jackcess</groupId>
+			<artifactId>jackcess</artifactId>
+			<version>${jackcess.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- Apache POI -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>${apache.poi.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>${apache.poi.version}</version>
+		</dependency>
+
+		<!-- SODS : ODS (OpenDocument Spreadsheet) export -->
+		<dependency>
+			<groupId>com.github.miachm.sods</groupId>
+			<artifactId>SODS</artifactId>
+			<version>${sods.version}</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.15.0</version>
+			</plugin>
+
+			<!-- Builds one runnable jar with all dependencies included, so "mvn package" alone
+				produces something runnable with "java -jar target/BroadSQL.jar" - no /lib folder,
+				no deployment step needed for this excerpt. -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.7.1</version>
+				<configuration>
+					<finalName>BroadSQL</finalName>
+					<archive>
+						<manifest>
+							<mainClass>com.upandcoding.broadsql.controller.BroadSQL</mainClass>
+						</manifest>
+						<manifestEntries>
+							<Implementation-Version>${app.version}</Implementation-Version>
+						</manifestEntries>
+					</archive>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<appendAssemblyId>false</appendAssemblyId>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Reads version.txt and exposes it as ${app.version}, used above for the jar
+				manifest's Implementation-Version. version.txt itself is never copied into the jar. -->
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+					<execution>
+						<id>read-version</id>
+						<phase>validate</phase>
+						<configuration>
+							<exportAntProperties>true</exportAntProperties>
+							<target>
+								<loadfile property="app.version" srcFile="${basedir}/version.txt">
+									<filterchain>
+										<striplinebreaks />
+									</filterchain>
+								</loadfile>
+								<echo message="Application version (from version.txt): ${app.version}" />
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
+
+</project>

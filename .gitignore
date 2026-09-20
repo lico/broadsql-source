@@ -1,0 +1,5 @@
+# Build output
+target/
+
+# Runtime log output (written when running the built jar / mvn test from this folder)
+logs/
