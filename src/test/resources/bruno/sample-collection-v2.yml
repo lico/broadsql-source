@@ -1,0 +1,187 @@
+opencollection: "1.0.0"
+bundled: true
+info:
+  name: Demo API
+  summary: Fixture collection for BroadSQL SPRINT XT02 sub-sprint 2 tests (v2 - re-import scenario)
+  version: "1.1.0"
+config:
+  environments:
+    - name: Development
+      variables:
+        - name: baseUrl
+          value: https://dev.example.com
+        - name: tenant
+          value: dev-tenant-v2
+        - name: token
+          value: dev-secret-token
+          secret: true
+    - name: Production
+      variables:
+        - name: baseUrl
+          value: https://api.example.com
+        - name: tenant
+          value: prod-tenant
+        - name: token
+          value: prod-secret-token
+          secret: true
+request:
+  headers:
+    - name: Accept
+      value: application/json
+  variables:
+    - name: apiVersion
+      value: "3"
+  auth:
+    type: bearer
+    token: "{{token}}"
+items:
+  - info:
+      name: Users
+      type: folder
+      seq: 1
+    request:
+      variables:
+        - name: resource
+          value: users
+    items:
+      - info:
+          name: Search
+          type: folder
+          seq: 1
+        request:
+          variables:
+            - name: resource
+              value: users/search
+        items:
+          - info:
+              name: Advanced Search
+              type: folder
+              seq: 1
+            items:
+              - info:
+                  name: Advanced Search Users
+                  type: http
+                  seq: 1
+                http:
+                  method: GET
+                  url: "{{baseUrl}}/{{resource}}"
+                  headers:
+                    - name: X-Request-Type
+                      value: advanced-search
+                  params:
+                    - name: q
+                      value: "{{tenant}}"
+                      type: query
+                    - name: tag
+                      value: admin
+                      type: query
+                    - name: tag
+                      value: verified
+                      type: query
+                    - name: id
+                      value: "{{userId}}"
+                      type: path
+                runtime:
+                  variables:
+                    - name: userId
+                      value: "42"
+      - info:
+          name: Fetch User
+          type: http
+          seq: 2
+        http:
+          method: GET
+          url: "{{baseUrl}}/{{resource}}/{{userId}}"
+          headers:
+            - name: Accept
+              value: application/vnd.api+json
+            - name: X-Debug
+              value: "true"
+          params:
+            - name: expand
+              value: profile,orders
+              type: query
+        runtime:
+          variables:
+            - name: userId
+              value: "1"
+          scripts:
+            - type: tests
+              code: "expect(res.status).to.equal(200);"
+      - info:
+          name: Create User
+          type: http
+          seq: 3
+        http:
+          method: POST
+          url: "{{baseUrl}}/{{resource}}"
+          headers:
+            - name: Content-Type
+              value: application/json
+          body:
+            type: json
+            data: |
+              {
+                "name": "{{userName}}"
+              }
+        runtime:
+          variables:
+            - name: userName
+              value: Alice
+      - info:
+          name: Update User
+          type: http
+          seq: 4
+        http:
+          method: PUT
+          url: "{{baseUrl}}/{{resource}}/{{userId}}"
+          headers:
+            - name: Content-Type
+              value: application/json
+          body:
+            type: json
+            data: '{"name": "{{userName}}"}'
+          auth:
+            type: apikey
+            key: X-Api-Key
+            value: "{{token}}"
+            placement: header
+      - info:
+          name: Head User
+          type: http
+          seq: 5
+        http:
+          method: HEAD
+          url: "{{baseUrl}}/{{resource}}/{{userId}}"
+      - info:
+          name: Delete User
+          type: http
+          seq: 6
+        http:
+          method: DELETE
+          url: "{{baseUrl}}/{{resource}}/{{userId}}"
+  - info:
+      name: Administration
+      type: folder
+      seq: 2
+    request:
+      auth:
+        type: oauth2
+        flow: client_credentials
+        accessTokenUrl: "{{baseUrl}}/oauth/token"
+        credentials:
+          clientId: "{{clientId}}"
+          clientSecret: "{{clientSecret}}"
+          placement: basic_auth_header
+        scope: admin.read
+    items:
+      - info:
+          name: Health Check
+          type: http
+          seq: 1
+        http:
+          method: GET
+          url: "{{baseUrl}}/health"
+          auth: inherit
+  - type: script
+    script: "// shared collection helper script - deliberately not imported (runtime feature)"
