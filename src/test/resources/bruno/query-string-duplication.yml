@@ -1,0 +1,27 @@
+opencollection: "1.0.0"
+bundled: true
+info:
+  name: Query String Duplication Fixture
+  summary: API Quality and UX Consolidation sprint - a url with a query string embedded literally, alongside structured params that partially cover it
+  version: "1.0.0"
+config:
+  environments:
+    - name: Development
+      variables:
+        - name: baseUrl
+          value: https://dev.example.com
+items:
+  - info:
+      name: Products
+      type: http
+      seq: 1
+    http:
+      method: GET
+      url: "{{baseUrl}}/products?expand={{expand}}&limit=10&type=widget"
+      params:
+        - name: expand
+          value: "{{expand}}"
+          type: query
+        - name: limit
+          value: "10"
+          type: query
